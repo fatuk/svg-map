@@ -43,7 +43,7 @@ $(function () {
 		});
 	};
 
-	$("#map").load("../img/map_test.svg", function () {
+	$("#map").load("svg-map/img/map_test.svg", function () {
 		var svg = d3.select("#map").select("svg")
 			.on("click", stopped, true);
 
