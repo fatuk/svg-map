@@ -29,11 +29,13 @@ $(function () {
 	$tooltip.on('mouseover', function (e) {
 		var $target = $(e.currentTarget),
 			name = $target.data('name');
-		// $currentSvg = $(d3.select("#map").select('use[data-name="' + name + '"]')[0][0]);
-		d3.select("#map").select('use[data-name="' + name + '"]').attr("fill", "#2e3092");
-		// d3.select("#map").select('use[data-name="' + name + '"]');
 
-		console.log();
+
+		$target.css({
+			display: 'block'
+		});
+		d3.select("#map").select('use[data-name="' + name + '"]').attr("fill", "#2e3092");
+
 	});
 	d3.selection.prototype.moveToFront = function () {
 		return this.each(function () {
@@ -57,6 +59,8 @@ $(function () {
 		svg.call(zoom.event);
 		d3.select("#map").selectAll("use")
 			.on("mouseover", function () {
+				d3.select("#map").selectAll('use').attr("fill", "url(#pattern1)");
+
 				var mouse = d3.mouse(svg.node()).map(function (d) {
 					return parseInt(d, 10);
 				});
@@ -67,10 +71,11 @@ $(function () {
 					name = d3.select(this).attr('data-name');
 
 				$tooltip.data('name', name);
+				$tooltip.html(name);
 				$tooltip.css({
-				display: 'block',
-				top: top + (height / 3),
-				left: left + (width / 2)
+					display: 'block',
+					top: top + (height / 3),
+					left: left + (width / 2)
 				});
 
 				d3.select(this).attr("fill", "#2e3092");
