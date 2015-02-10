@@ -1,0 +1,62 @@
+body {
+	font-family: sans-serif;
+}
+#map {
+	width: 50%;
+	margin: 0 auto;
+}
+
+
+
+.hide {
+	/*display: none;*/
+}
+.tooltip {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 5;
+}
+.tooltip__point {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: #2E3092;
+	position: relative;
+}
+.tooltip__point:before {
+	content: '';
+	width: 30px;
+	height: 30px;
+	background: #2E3092;
+	opacity: .5;
+	position: absolute;
+	border-radius: 50%;
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	-o-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+}
+.tooltip.hover .tooltip__point{
+	background: #fff;
+	border: solid 10px rgba(46,48,146,.5);
+}
+.tooltip.hover .tooltip__label {
+	color: #fff;
+	text-shadow: 2px 2px 2px #2E3092;
+}
+.tooltip__label {
+	color: #2E3092;
+	position: absolute;
+	top: -30px;
+	right: 50%;
+	-webkit-transform: translateX(50%);
+	-ms-transform: translateX(50%);
+	-o-transform: translateX(50%);
+	transform: translateX(50%);
+	cursor: default;
+	font-size: 16px;
+	font-weight: 600;
+}

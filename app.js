@@ -21,22 +21,60 @@
 	}
 }());
 
+var mapRegions = {
+	'karagandinskaya': 'Карагандинская',
+	'vostochno-kazahstanskaya': 'ВКО',
+	'almatinskaya': 'Алматинская',
+	'pavlodarskaya': 'Павлодарская',
+	'akmolinskaya': 'Акмолинская',
+	'severo-kazahstanskaya': 'СКО',
+	'kostanayskaya': 'Костанайская',
+	'yujno-kazahstanskaya': 'ЮКО',
+	'jambilskaya': 'Ямбильская',
+	'kizilordinskaya': 'Кызылординская',
+	'mangistauskaya': 'Мангыстауская',
+	'atirauskaya': 'Атырауская',
+	'zapadno-kazahstanskaya': 'ЗКО',
+	'aktubinskaya': 'Актюбинская'
+};
 
 $(function () {
-	// Tooltip
-	$('body').append('<div class="tooltip hide js-tooltip"></div>');
+	// Tooltip init
+	var tooltipHoverTemplate = '<div class="tooltip hover hide js-tooltip">' +
+		'<div class="tooltip__point"></div>' +
+		'<div class="tooltip__label js-tooltipText"></div>' +
+		'</div>';
+	// Function to preselect cities
+	var setCity = function (cityLabel, svgElement) {
+		var tooltipTemplate = '<div id="' + cityLabel + '" class="tooltip">' +
+			'<div class="tooltip__point"></div>' +
+			'<div class="tooltip__label">' + cityLabel + '</div>' +
+			'</div>';
+		var top = svgElement.getBoundingClientRect().top,
+			left = svgElement.getBoundingClientRect().left,
+			width = svgElement.getBoundingClientRect().width,
+			height = svgElement.getBoundingClientRect().height;
+
+		$('body').append($(tooltipTemplate).css({
+			top: top + (height / 1.9),
+			left: left + (width / 2.1)
+		}));
+	};
+	$('body').append(tooltipHoverTemplate);
 	var $tooltip = $('.tooltip');
+
+	// Fix hover blinking
 	$tooltip.on('mouseover', function (e) {
 		var $target = $(e.currentTarget),
 			name = $target.data('name');
-
-
 		$target.css({
 			display: 'block'
 		});
 		d3.select("#map").select('use[data-name="' + name + '"]').attr("fill", "#2e3092");
 
 	});
+
+
 	d3.selection.prototype.moveToFront = function () {
 		return this.each(function () {
 			this.parentNode.appendChild(this);
@@ -44,9 +82,22 @@ $(function () {
 	};
 
 	$("#map").load("svg-map/img/map_test.svg", function () {
+		// Preset cities
+		var citiesArray = [{
+			id: 'almatinskaya',
+			label: 'Алматы'
+		}, {
+			id: 'akmolinskaya',
+			label: 'Астана'
+		}];
+		for (var i = 0; i < citiesArray.length; i++) {
+			var svgElement = d3.select("#map").select('use[data-name="' + citiesArray[i].id + '"]')[0][0];
+			setCity(citiesArray[i].label, svgElement);
+		}
+
+
 		var svg = d3.select("#map").select("svg")
 			.on("click", stopped, true);
-
 
 		var active = d3.select(null);
 
@@ -61,21 +112,27 @@ $(function () {
 			.on("mouseover", function () {
 				d3.select("#map").selectAll('use').attr("fill", "url(#pattern1)");
 
-				var mouse = d3.mouse(svg.node()).map(function (d) {
+				/*var mouse = d3.mouse(svg.node()).map(function (d) {
 					return parseInt(d, 10);
-				});
+				});*/
 				var top = d3.select(this)[0][0].getBoundingClientRect().top,
 					left = d3.select(this)[0][0].getBoundingClientRect().left,
 					width = d3.select(this)[0][0].getBoundingClientRect().width,
 					height = d3.select(this)[0][0].getBoundingClientRect().height,
-					name = d3.select(this).attr('data-name');
+					name = d3.select(this).attr('data-name'),
+					$tooltipText = $tooltip.find('.js-tooltipText');
 
+				if (name === citiesArray[0].id || name === citiesArray[1].id) {
+					d3.select(this).attr("fill", "#2e3092");
+					return false;
+				}
+				// Set tooltip data
 				$tooltip.data('name', name);
-				$tooltip.html(name);
+				$tooltipText.html(mapRegions[name]);
 				$tooltip.css({
 					display: 'block',
-					top: top + (height / 3),
-					left: left + (width / 2)
+					top: top + (height / 1.9),
+					left: left + (width / 2.1)
 				});
 
 				d3.select(this).attr("fill", "#2e3092");
