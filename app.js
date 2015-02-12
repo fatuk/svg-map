@@ -179,8 +179,6 @@ $(function () {
 		}
 
 		function reset(newActive) {
-
-
 			svg.transition()
 				.duration(750)
 				.call(zoom.translate([0, 0]).scale(1).event).each("end", function () {
@@ -199,9 +197,7 @@ $(function () {
 								isInProgress = 0;
 							});
 					}
-
 				});
-			//
 		}
 
 
@@ -209,8 +205,9 @@ $(function () {
 			var legend = $(".jumbotron.legend");
 			var region = active.node() ? active.attr("xlink:href") : "";
 
-			var regionAlias = active.attr('data-name');
-			console.log(regionAlias);
+			if (active[0][0]) {
+				var regionAlias = active.attr('data-name');
+			}
 
 			legend.find('h3.info').remove();
 			$('#map-info').show();
@@ -228,10 +225,12 @@ $(function () {
 			}
 
 			isInProgress = 1;
-			if (active.node() === this) return reset();
+			if (active.node() === this) {
+				return reset();
+			}
 
 			active.classed("active", false);
-			if (active.node() != undefined) {
+			if (active.node() !== undefined) {
 				var n = d3.select(this).classed("active", true).moveToFront();
 				reset(n);
 			} else {
@@ -259,7 +258,7 @@ function setupLabel() {
 		$('.label_check input:checked').each(function () {
 			$(this).parent('label').addClass('c_on');
 		});
-	};
+	}
 	if ($('.label_radio input').length) {
 		$('.label_radio').each(function () {
 			$(this).removeClass('r_on');
@@ -267,8 +266,8 @@ function setupLabel() {
 		$('.label_radio input:checked').each(function () {
 			$(this).parent('label').addClass('r_on');
 		});
-	};
-};
+	}
+}
 $(document).ready(function () {
 	$('.label_radio').click(function () {
 		setupLabel();
