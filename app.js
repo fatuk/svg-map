@@ -63,6 +63,14 @@ $(function () {
 			var name = $(this).attr('id');
 			$(this).addClass('hover');
 			d3.select("#map").select('use[data-name="' + name + '"]').attr("fill", "#2e3092");
+		}).on('click', function (e) {
+			var regionId = $(this).attr('id');
+			var $mapRegion = d3.select("#map").select('use[data-name="' + regionId + '"]');
+
+			var event = document.createEvent("SVGEvents");
+			event.initEvent("click", true, true);
+			$mapRegion[0][0].dispatchEvent(event);
+
 		}));
 	};
 	$('body').append(tooltipHoverTemplate);
@@ -77,6 +85,13 @@ $(function () {
 		});
 		d3.select("#map").select('use[data-name="' + name + '"]').attr("fill", "#2e3092");
 
+	}).on('click', function (e) {
+		var regionId = $(this).data('name');
+		var $mapRegion = d3.select("#map").select('use[data-name="' + regionId + '"]');
+
+		var event = document.createEvent("SVGEvents");
+		event.initEvent("click", true, true);
+		$mapRegion[0][0].dispatchEvent(event);
 	});
 
 
@@ -195,14 +210,15 @@ $(function () {
 			var region = active.node() ? active.attr("xlink:href") : "";
 
 			var regionAlias = active.attr('data-name');
+			console.log(regionAlias);
 
 			legend.find('h3.info').remove();
 			$('#map-info').show();
 
-			$('#map-info').find("h3").text(arrRegions[regionAlias].name);
-			$('#map-info').find(".innovativeActivity span").text(arrRegions[regionAlias].innovativeActivity);
-			$('#map-info').find(".ongoingProjects span").text(arrRegions[regionAlias].ongoingProjects);
-			$('#map-info').find(".expenditureOnInnovation span").text(arrRegions[regionAlias].expenditureOnInnovation);
+			// $('#map-info').find("h3").text(arrRegions[regionAlias].name);
+			// $('#map-info').find(".innovativeActivity span").text(arrRegions[regionAlias].innovativeActivity);
+			// $('#map-info').find(".ongoingProjects span").text(arrRegions[regionAlias].ongoingProjects);
+			// $('#map-info').find(".expenditureOnInnovation span").text(arrRegions[regionAlias].expenditureOnInnovation);
 		}
 
 		function clicked(d) {
