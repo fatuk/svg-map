@@ -4,32 +4,34 @@ body {
 #map {
 	width: 50%;
 	margin: 0 auto;
+	background: orange;
+	position: relative;
 }
 
 
 
-.hide {
-	/*display: none;*/
-}
-.tooltip {
-	position: absolute;
+.map-tooltip {
+	display: none;
+	position: fixed;
 	left: 0;
 	top: 0;
 	z-index: 5;
 }
-.tooltip__point {
-	width: 10px;
-	height: 10px;
-	border-radius: 50%;
-	background: #2E3092;
-	position: relative;
+.map-tooltip_absolute {
+	position: absolute;
 }
-.tooltip__point:before {
-	content: '';
+.map-tooltip__point {
 	width: 30px;
 	height: 30px;
+	border-radius: 50%;
+	background: rgba(46,48,146,.3);
+	position: relative;
+}
+.map-tooltip__point:before {
+	content: '';
+	width: 8px;
+	height: 8px;
 	background: #2E3092;
-	opacity: .5;
 	position: absolute;
 	border-radius: 50%;
 	left: 50%;
@@ -39,15 +41,17 @@ body {
 	-o-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 }
-.tooltip.hover .tooltip__point{
-	background: #fff;
-	border: solid 10px rgba(46,48,146,.5);
+.map-tooltip.hover .map-tooltip__point{
+	background: rgba(255,255,255,.3);
 }
-.tooltip.hover .tooltip__label {
+.map-tooltip.hover .map-tooltip__point:before {
+	background: #fff;
+}
+.map-tooltip.hover .map-tooltip__label {
 	color: #fff;
 	text-shadow: 2px 2px 2px #2E3092;
 }
-.tooltip__label {
+.map-tooltip__label {
 	color: #2E3092;
 	position: absolute;
 	top: -30px;

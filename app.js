@@ -40,15 +40,15 @@ var mapRegions = {
 
 $(function () {
 	// Tooltip init
-	var tooltipHoverTemplate = '<div class="tooltip hover hide js-tooltip">' +
-		'<div class="tooltip__point"></div>' +
-		'<div class="tooltip__label js-tooltipText"></div>' +
+	var tooltipHoverTemplate = '<div class="map-tooltip hover js-tooltip">' +
+		'<div class="map-tooltip__point"></div>' +
+		'<div class="map-tooltip__label js-tooltipText"></div>' +
 		'</div>';
 	// Function to preselect cities
-	var setCity = function (cityLabel, svgElement) {
-		var tooltipTemplate = '<div id="' + cityLabel + '" class="tooltip">' +
-			'<div class="tooltip__point"></div>' +
-			'<div class="tooltip__label">' + cityLabel + '</div>' +
+	var setCity = function (cityData, svgElement) {
+		var tooltipTemplate = '<div id="' + cityData.id + '" class="map-tooltip map-tooltip_absolute">' +
+			'<div class="map-tooltip__point"></div>' +
+			'<div class="map-tooltip__label">' + cityData.label + '</div>' +
 			'</div>';
 		var top = svgElement.getBoundingClientRect().top,
 			left = svgElement.getBoundingClientRect().left,
@@ -57,11 +57,16 @@ $(function () {
 
 		$('body').append($(tooltipTemplate).css({
 			top: top + (height / 1.9),
-			left: left + (width / 2.1)
+			left: left + (width / 2.1),
+			display: 'block'
+		}).on('mouseover', function (e) {
+			var name = $(this).attr('id');
+			$(this).addClass('hover');
+			d3.select("#map").select('use[data-name="' + name + '"]').attr("fill", "#2e3092");
 		}));
 	};
 	$('body').append(tooltipHoverTemplate);
-	var $tooltip = $('.tooltip');
+	var $tooltip = $('.map-tooltip');
 
 	// Fix hover blinking
 	$tooltip.on('mouseover', function (e) {
@@ -92,9 +97,8 @@ $(function () {
 		}];
 		for (var i = 0; i < citiesArray.length; i++) {
 			var svgElement = d3.select("#map").select('use[data-name="' + citiesArray[i].id + '"]')[0][0];
-			setCity(citiesArray[i].label, svgElement);
+			setCity(citiesArray[i], svgElement);
 		}
-
 
 		var svg = d3.select("#map").select("svg")
 			.on("click", stopped, true);
@@ -110,20 +114,18 @@ $(function () {
 		svg.call(zoom.event);
 		d3.select("#map").selectAll("use")
 			.on("mouseover", function () {
+				$('.js-tooltip').hide();
 				d3.select("#map").selectAll('use').attr("fill", "url(#pattern1)");
-
-				/*var mouse = d3.mouse(svg.node()).map(function (d) {
-					return parseInt(d, 10);
-				});*/
+				// Get map region params
 				var top = d3.select(this)[0][0].getBoundingClientRect().top,
 					left = d3.select(this)[0][0].getBoundingClientRect().left,
 					width = d3.select(this)[0][0].getBoundingClientRect().width,
 					height = d3.select(this)[0][0].getBoundingClientRect().height,
 					name = d3.select(this).attr('data-name'),
 					$tooltipText = $tooltip.find('.js-tooltipText');
-
 				if (name === citiesArray[0].id || name === citiesArray[1].id) {
 					d3.select(this).attr("fill", "#2e3092");
+					$('#' + name).addClass('hover');
 					return false;
 				}
 				// Set tooltip data
@@ -131,17 +133,19 @@ $(function () {
 				$tooltipText.html(mapRegions[name]);
 				$tooltip.css({
 					display: 'block',
-					top: top + (height / 1.9),
+					top: top + (height / 2.4),
 					left: left + (width / 2.1)
 				});
 
 				d3.select(this).attr("fill", "#2e3092");
 			})
 			.on("mouseout", function () {
+				var name = d3.select(this).attr('data-name');
 				$tooltip.css({
 					display: 'none'
 				});
 				d3.select(this).attr("fill", "url(#pattern1)");
+				$('#' + name).removeClass('hover');
 			})
 			.on("click", clicked);
 
